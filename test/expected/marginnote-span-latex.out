@@ -1,4 +1,4 @@
 A paragraph with an open note \marginnoteopen{this needs a citation}
 inline.
 
-A paragraph with a closed note \marginnoteclosed{checked --- ok} inline.
+A paragraph with a closed note \marginnoteclosed{checked ok} inline.
