@@ -8,7 +8,7 @@ container-writer:
 ::: title
 Note
 :::
-Content — note is not whitelisted, passes through unchanged.
+Content  note is not whitelisted, passes through unchanged.
 :::
 
 A standalone div with class title outside any alert:
