@@ -1,0 +1,23 @@
+\startnote
+
+\starttitle
+
+Note
+
+\stoptitle
+
+Content of the note.
+
+\stopnote
+
+\startwarning
+
+\starttitle
+
+Warning
+
+\stoptitle
+
+Content of the warning.
+
+\stopwarning

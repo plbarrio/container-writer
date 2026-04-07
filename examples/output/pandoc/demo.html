@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>container-writer — demo</title>
+  <style>
+
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+  <style type="text/css">
+body {
+font-family: "Baskervville", "TeX Gyre Pagella", "Libertinus Serif", serif;
+font-size: 1rem;
+line-height: 1.6;
+max-width: 40em;
+margin: 2em auto;
+padding: 0 1em;
+}
+.epigraph {
+margin: 2em 4em;
+font-style: italic;
+color: #444;
+}
+.epigraph p {
+margin: 0.25em 0;
+}
+.dedication {
+margin: 2em auto;
+text-align: center;
+font-style: italic;
+}
+.abstract {
+margin: 1.5em 2em;
+font-size: 0.95em;
+border-left: 3px solid #ccc;
+padding-left: 1em;
+}
+.sidebar {
+background: #f5f5f5;
+border-left: 3px solid #ccc;
+padding: 0.1em 0.4em;
+font-size: 0.9em;
+}
+.highlight {
+background: #fffbcc;
+padding: 0.1em 0.2em;
+}
+
+.note {
+margin: 1.25rem 0;
+border-radius: .375rem;
+border-left: 5px solid var(--color);
+border-right: 1px solid rgba(210, 215, 220, 0.5);
+border-top: 1px solid rgba(210, 215, 220, 0.5);
+border-bottom: 1px solid rgba(210, 215, 220, 0.5);
+background-color: white;
+--color: #0969da;
+--bg: #f6f8fa;
+--icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230969da'%3E%3Cpath d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1 0-1.5h.25V8.5h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z'%3E%3C/path%3E%3C/svg%3E");
+}
+.note .title {
+display: flex;
+align-items: center;
+gap: 0.5em;
+font-weight: 600;
+font-size: .9rem;
+padding: .4em .7em .4em 2rem;
+color: var(--color);
+background-color: var(--bg);
+background-image: var(--icon);
+background-repeat: no-repeat;
+background-position: 0.7rem center;
+background-size: 1rem;
+}
+
+.marginnoteopen {
+display: inline;
+color: #e06c00;
+font-size: 0.75em;
+font-family: monospace;
+}
+.marginnoteopen::before { content: "✎ "; }
+.marginnoteclosed {
+display: inline;
+color: #999;
+font-size: 0.75em;
+font-family: monospace;
+}
+.marginnoteclosed::before { content: "✓ "; }
+.marginnoteopenblock {
+display: block;
+text-align: right;
+color: #e06c00;
+font-size: 0.75em;
+font-family: monospace;
+}
+.marginnoteopenblock::before { content: "✎ "; }
+.marginnoteclosedblock {
+display: block;
+text-align: right;
+color: #999;
+font-size: 0.75em;
+font-family: monospace;
+}
+.marginnoteclosedblock::before { content: "✓ "; }
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">container-writer — demo</h1>
+</header>
+<h1 id="block-containers-div">Block containers (Div)</h1>
+<h2 id="epigraph">Epigraph</h2>
+<div class="epigraph">
+<p><em>The world is a book, and those who do not travel read only one
+page.</em></p>
+<p>— Saint Augustine</p>
+</div>
+<h2 id="dedication">Dedication</h2>
+<div class="dedication">
+<p>For all who write in the margins.</p>
+</div>
+<h2 id="abstract">Abstract</h2>
+<div class="abstract">
+<p>This document demonstrates the container-writer filter, which
+translates generic Div and Span elements into format-native environments
+for LaTeX, ConTeXt, Typst and HTML.</p>
+</div>
+<hr />
+<h1 id="inline-containers-span">Inline containers (Span)</h1>
+<p>A paragraph with a <span class="sidebar">marginal note</span>
+inserted inline.</p>
+<p>Another paragraph with a <span class="sidebar">second note</span>
+further along.</p>
+<hr />
+<h1 id="per-block-override">Per-block override</h1>
+<p>The <strong>env=</strong> attribute overrides the environment name
+for a specific block:</p>
+<div class="epigraph" data-env="myepigraph">
+<p>This block uses a custom environment name via <code>env=</code>.</p>
+</div>
+<hr />
+<h1 id="nested-styles-parent.child">Nested styles (parent.child)</h1>
+<p>A container can have a titled child — both whitelisted independently.
+The <code>note.title</code> entry wraps the title in its own
+environment:</p>
+<div class="note">
+<div class="title">
+<p>Note</p>
+</div>
+<p>The title above is wrapped in its own environment via the
+<code>note.title</code> whitelist entry — useful for applying distinct
+formatting to the label.</p>
+</div>
+<hr />
+<h1 id="remapping-latex-only">Remapping (LaTeX only)</h1>
+<p>The <code>note.title: notetitle</code> entry in the
+<code>latex:</code> whitelist remaps the <code>note.title</code> class
+to a different environment name in LaTeX output only. Other formats use
+the default <code>title</code> name:</p>
+<div class="note">
+<div class="title">
+<p>Note</p>
+</div>
+<p>In LaTeX this title renders as <code>\begin{notetitle}</code> instead
+of <code>\begin{title}</code> — useful when your preamble defines
+format-specific environment names.</p>
+</div>
+<hr />
+<h1 id="whitelist-unknown-containers-pass-through">Whitelist — unknown
+containers pass through</h1>
+<p>This block is <strong>not</strong> in the whitelist and passes
+through unchanged:</p>
+<div class="unknown">
+<p>This div has no matching whitelist entry.</p>
+</div>
+<hr />
+<h1 id="editorial-margin-notes">Editorial margin notes</h1>
+<p>Margin notes are inline annotations for authors and editors. They are
+visible in review builds and stripped in production by removing the
+classes from the whitelist — no changes to the source files are
+needed.</p>
+<h2 id="inline-span">Inline (Span)</h2>
+<p>A short open note sits <span class="marginnoteopen">this argument
+needs a citation</span> right next to the text it refers to.</p>
+<p>A resolved note looks <span class="marginnoteclosed">checked against
+sources — ok</span> different so you can see at a glance what still
+needs attention.</p>
+<h2 id="block-div">Block (Div)</h2>
+<p>For longer annotations a fenced Div works better:</p>
+<div class="marginnoteopenblock">
+<p>This section feels rushed. Consider splitting into two paragraphs and
+adding a transitional sentence.</p>
+</div>
+<div class="marginnoteclosedblock">
+<p>Reviewed by Joan on 2026-03-15. Pacing addressed in rev2.</p>
+</div>
+</body>
+</html>

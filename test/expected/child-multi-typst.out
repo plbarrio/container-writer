@@ -1,0 +1,24 @@
+#block[
+#block[
+#block[
+#block[
+Note
+
+]
+] <title>
+Content of the note.
+
+]
+] <note>
+#block[
+#block[
+#block[
+#block[
+Warning
+
+]
+] <title>
+Content of the warning.
+
+]
+] <warning>

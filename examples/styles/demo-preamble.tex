@@ -1,0 +1,109 @@
+% ============================================================
+% demo-preamble.tex — LaTeX preamble for the container-writer demo
+% ============================================================
+
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}
+
+% --- Existing containers ------------------------------------
+
+\newenvironment{epigraph}
+  {\begin{quote}\itshape\color{gray}}
+  {\end{quote}}
+
+\makeatletter
+\@ifundefined{dedication}{%
+  \newenvironment{dedication}%
+    {\begin{center}\itshape}%
+    {\end{center}}%
+}{%
+  \renewenvironment{dedication}%
+    {\begin{center}\itshape}%
+    {\end{center}}%
+}
+\makeatother
+
+\renewenvironment{dedication}
+  {\begin{center}\itshape}
+  {\end{center}}
+
+\renewenvironment{abstract}
+  {\begin{quote}\small}
+  {\end{quote}}
+
+\newenvironment{myepigraph}
+  {\begin{quote}\itshape}
+  {\end{quote}}
+
+\newcommand{\sidebar}[1]{\textit{#1}}
+
+% --- Alerts -------------------------------------------------
+
+\definecolor{alert-note}{RGB}{9,105,218}
+\definecolor{alert-note-bg}{RGB}{246,248,250}
+
+\newtcolorbox{note}{
+  breakable,
+  enhanced,
+  colback=white,
+  colframe=alert-note,
+  boxrule=0.5pt,
+  borderline west={3pt}{0pt}{alert-note},
+  arc=2pt,
+  boxsep=6pt,
+}
+
+% Suppress Div.title content inside alerts via remap (note.title: notetitle in YAML)
+% Content is captured into a throwaway box — label comes from the environment definition
+\newenvironment{notetitle}
+  {%
+   \setbox0=\hbox\bgroup
+   \begingroup
+   \bfseries\small\color{alert-note}%
+   \raisebox{0.2ex}{\textcircled{\scriptsize i}}%
+   \hspace{0.5em}%
+   \ignorespaces
+  }
+  {%
+   \unskip
+   \endgroup
+   \egroup
+   \noindent\box0
+  }
+% --- Editorial margin notes ---------------------------------
+% Symbols: standard LaTeX math — no extra packages needed.
+% With fontspec 2.8+ (upstream TeX Live 2022+) you can use Unicode
+% glyphs instead: ✎ / ✓ via FallbackFonts = {DejaVu Sans, Symbola}
+
+% Span: [text]{.marginnoteopen}
+\newcommand{\marginnoteopen}[1]{%
+  \vbox to 0pt{%
+    \hbox to \textwidth{\hfill{\color{orange}\ttfamily\small $\triangleright$~#1}}%
+    \vss}%
+}
+
+\newcommand{\marginnoteclosed}[1]{%
+  \vbox to 0pt{%
+    \hbox to \textwidth{\hfill{\color{gray}\ttfamily\small $\checkmark$~#1}}%
+    \vss}%
+}
+
+% Div: ::: marginnoteopenblock / marginnoteclosedblock
+\newenvironment{marginnoteopenblock}{%
+  \vbox to 0pt\bgroup%
+    \hbox to \textwidth\bgroup\hfill\color{orange}\ttfamily\small $\triangleright$~%
+}{%
+    \egroup\vss%
+  \egroup%
+}
+
+\newenvironment{marginnoteclosedblock}{%
+  \vbox to 0pt\bgroup%
+    \hbox to \textwidth\bgroup\hfill\color{gray}\ttfamily\small $\checkmark$~%
+}{%
+    \egroup\vss%
+  \egroup%
+}

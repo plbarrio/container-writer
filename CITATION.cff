@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this filter, please cite it."
+authors:
+  - family-names: "Barrio"
+    given-names: "Pedro Luis"
+title: "container-writer.lua / container-strip.lua"
+version: 0.1.0
+date-released: 2026-03-21
+url: "https://github.com/plbarrio/container-writer"
+license: GPL-3.0-or-later
+abstract: >
+  Two companion Pandoc Lua filters. container-writer translates generic
+  Div and Span containers into format-native environments for LaTeX,
+  ConTeXt, Typst, and passthrough for HTML/EPUB. Supports plain and
+  compound (parent.child) whitelist entries for nested element handling.
+  container-strip removes Div and Span elements by class, for stripping
+  editorial annotations in production builds.
+keywords:
+  - pandoc
+  - lua-filter
+  - latex
+  - context
+  - typst
+  - epub
+  - markdown
+  - publishing

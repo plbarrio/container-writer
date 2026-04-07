@@ -1,0 +1,1 @@
+_extensions/container-writer/container-strip.lua

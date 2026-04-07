@@ -1,0 +1,103 @@
+% ============================================================
+% demo.ctx — ConTeXt setup for the container-writer demo
+% ============================================================
+
+\defineblank[BlockDistance][medium]
+
+% --- Existing containers ------------------------------------
+
+% epigraph — indented both sides, italic, gray
+\definestartstop[epigraph][
+  style=\it,
+  color=darkgray,
+  before={\blank[BlockDistance]
+    \setupnarrower[left=2cm, right=2cm]
+    \startnarrower[left,right]
+    \noindent},
+  after={\stopnarrower
+    \blank[BlockDistance]
+    \indenting[next]}]
+
+% myepigraph — same as epigraph (per-block override example)
+\definestartstop[myepigraph][
+  style=\it,
+  color=darkgray,
+  before={\blank[BlockDistance]
+    \setupnarrower[left=2cm, right=2cm]
+    \startnarrower[left,right]
+    \noindent},
+  after={\stopnarrower
+    \blank[BlockDistance]
+    \indenting[next]}]
+
+% dedication — centered, italic
+\definestartstop[dedication][
+  style=\it,
+  before={\blank[BlockDistance]
+    \setupnarrower[left=2cm, right=2cm]
+    \startnarrower[left,right]
+    \midaligned\bgroup\noindent},
+  after={\egroup
+    \stopnarrower
+    \blank[BlockDistance]
+    \indenting[next]}]
+
+% abstract — left indent only, smaller
+\definestartstop[abstract][
+  style=\tfx,
+  before={\blank[BlockDistance]
+    \setupnarrower[left=1cm]
+    \startnarrower[left]
+    \noindent},
+  after={\stopnarrower
+    \blank[BlockDistance]
+    \indenting[next]}]
+
+% sidebar — inline italic
+\definehighlight[sidebar][style=italic]
+
+\setupbodyfont[pagella, 11pt]
+
+% --- Alerts -------------------------------------------------
+
+\definecolor[alert-note][r=0.035,g=0.412,b=0.855]
+
+\def\makealert#1#2{%
+  \blank[medium]
+  \noindentation{\bf\color[#2]{#1}}\blank[small]
+  \color[#2]{\hrule}\blank[small]
+}
+
+% title content is discarded via throwaway box — label comes from \makealert
+\definestartstop[note]
+  [before={%
+    \def\starttitle{\setbox0\vbox\bgroup}%
+    \def\stoptitle{\egroup}%
+    \makealert{Note}{alert-note}},
+   after={\blank[medium]}]
+
+% --- Editorial margin notes ---------------------------------
+
+% Span: [text]{.marginnoteopen}
+\def\marginnoteopen#1{%
+  \vbox to 0pt{%
+    \hbox to \textwidth{\hfill{\tfx\color[orange]{✎~#1}}}%
+    \vss%
+  }%
+}
+
+\def\marginnoteclosed#1{%
+  \vbox to 0pt{%
+    \hbox to \textwidth{\hfill{\tfx\color[gray]{✓~#1}}}%
+    \vss%
+  }%
+}
+
+% Div: ::: marginnoteopenblock
+\definestartstop[marginnoteopenblock][
+  before={\vbox to 0pt\bgroup\hbox to \textwidth\bgroup\hfill\tfx\color[orange]{✎~}},
+  after={\egroup\vss\egroup}]
+
+\definestartstop[marginnoteclosedblock][
+  before={\vbox to 0pt\bgroup\hbox to \textwidth\bgroup\hfill\tfx\color[gray]{✓~}},
+  after={\egroup\vss\egroup}]

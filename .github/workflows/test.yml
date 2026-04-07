@@ -1,0 +1,49 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-3_1_3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pandoc/actions/setup@v1
+        with:
+          version: 3.1.3
+
+      - name: Run writer tests
+        run: make test
+
+      - name: Run strip tests
+        run: make test-strip
+
+  test-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pandoc/actions/setup@v1
+
+      - name: Run writer tests
+        run: make test
+
+      - name: Run strip tests
+        run: make test-strip
+
+  test-quarto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Run writer tests (Quarto)
+        run: make test-quarto
+
+      - name: Run strip tests (Quarto)
+        run: make test-quarto-strip

@@ -1,0 +1,23 @@
+\begin{note}
+
+\begin{title}
+
+Note
+
+\end{title}
+
+Content of the note.
+
+\end{note}
+
+\begin{warning}
+
+\begin{title}
+
+Warning
+
+\end{title}
+
+Content of the warning.
+
+\end{warning}
