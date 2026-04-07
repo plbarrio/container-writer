@@ -1,7 +1,8 @@
 FILTER       = container-writer.lua
 STRIP_FILTER = container-strip.lua
 STRIP_INPUTS = $(wildcard test/input/strip-*.md)
-INPUTS       = $(filter-out $(STRIP_INPUTS), $(wildcard test/input/*.md))
+INPUTS_NOFILTER = $(wildcard test/input/white*.md)
+INPUTS       = $(filter-out $(STRIP_INPUTS) $(INPUTS_NOFILTER), $(wildcard test/input/*.md))
 FORMATS      = latex context typst
 
 .PHONY: test test-strip test-quarto test-quarto-strip \

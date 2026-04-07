@@ -112,11 +112,12 @@ local function wrap_element(el, environment, is_inline)
     if is_inline then
       return inline_wrap('typst', '#[', el.content, '] <' .. environment .. '>')
     else
-      return {
-        pandoc.RawBlock('typst', '#block['),
-        el,
-        pandoc.RawBlock('typst', '] <' .. environment .. '>'),
-      }
+      local blocks = { pandoc.RawBlock('typst', '#block[') }
+      for _, block in ipairs(el.content) do
+        table.insert(blocks, block)
+      end
+      table.insert(blocks, pandoc.RawBlock('typst', '] <' .. environment .. '>'))
+      return blocks
     end
 
   elseif FORMAT == 'latex' then

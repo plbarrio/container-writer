@@ -1,7 +1,7 @@
 ---
 container-writer:
   common:
-    - epigraph
+    - myepigraph
 ---
 
 ::: {.epigraph env=myepigraph}

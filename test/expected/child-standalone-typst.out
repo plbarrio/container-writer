@@ -1,9 +1,7 @@
 #block[
 #block[
-#block[
 Note
 
-]
 ] <title>
 Content --- note is not whitelisted, passes through unchanged.
 
