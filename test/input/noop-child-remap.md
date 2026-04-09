@@ -9,7 +9,7 @@ container-writer:
   html:
     - note.title
     
-container-unwrap: void
+container-unwrap: all
 ---
 
 ::: note

@@ -1,4 +1,1 @@
-#block[
 This block is not in the whitelist and should pass through unchanged.
-
-]

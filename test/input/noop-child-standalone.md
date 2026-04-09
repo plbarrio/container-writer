@@ -3,7 +3,7 @@ container-writer:
   common:
     - note.title
     
-container-unwrap: void
+container-unwrap: all
 ---
 
 ::: note

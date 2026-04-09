@@ -2,10 +2,9 @@
 container-writer:
   common:
     - epigraph
-container-unwrap:
-  - void
-  
-container-unwrap: void
+    
+container-unwrap: all
+
 ---
 
 ::: {.epigraph .sidebar}
