@@ -59,8 +59,7 @@ local function process_metadata(meta)
 
   local function add_list(list)
     if not list then return end
-    local items = (pandoc.utils.type(list) == 'List') and list or { list }
-    for _, item in ipairs(items) do
+    for _, item in ipairs(list) do
       local t = pandoc.utils.type(item)
       if t == 'Meta' or t == 'table' then
         -- remap entry: {note.title: notetitle}
@@ -152,33 +151,84 @@ local function wrap_element(el, environment, is_inline)
   end
 end
 
---- Walks children looking for trigger.class whitelist matches.
---- trigger     : remaining path — current level name, used for child lookup and environment
+--- Pass 1: mark matching children with _cw_env and _cw_acc attributes.
+--- Does not substitute — lets the walk descend fully into nested levels
+--- before any replacement occurs. This avoids a Pandoc 3.9 behaviour where
+--- returning a replacement from a walk handler stops further descent.
+local function mark_children(el, accumulated)
+  return el:walk {
+    Div = function(child)
+      local class = child.classes:find_if(function(c)
+        return Whitelist[accumulated .. '.' .. c]
+      end)
+      if class then
+        local entry = Whitelist[accumulated .. '.' .. class]
+        local env   = (entry == true) and class or entry
+        local acc   = accumulated .. '.' .. class
+        child = mark_children(child, acc)
+        child.attributes['_cw_env'] = env
+        child.attributes['_cw_acc'] = acc
+        return child
+      end
+    end,
+    Span = function(child)
+      local class = child.classes:find_if(function(c)
+        return Whitelist[accumulated .. '.' .. c]
+      end)
+      if class then
+        local entry = Whitelist[accumulated .. '.' .. class]
+        local env   = (entry == true) and class or entry
+        local acc   = accumulated .. '.' .. class
+        child = mark_children(child, acc)
+        child.attributes['_cw_env'] = env
+        child.attributes['_cw_acc'] = acc
+        return child
+      end
+    end,
+  }
+end
+
+--- Pass 2: substitute marked elements with their format-native wrapping.
+--- Runs bottom-up so inner elements are wrapped before outer ones.
+local function wrap_marked(el)
+  return el:walk {
+    Div = function(child)
+      local env = child.attributes['_cw_env']
+      local acc = child.attributes['_cw_acc']
+      if env then
+        child.attributes['_cw_env'] = nil
+        child.attributes['_cw_acc'] = nil
+        if in_whitelist(acc) then
+          return wrap_element(child, env, false)
+        end
+      end
+    end,
+    Span = function(child)
+      local env = child.attributes['_cw_env']
+      local acc = child.attributes['_cw_acc']
+      if env then
+        child.attributes['_cw_env'] = nil
+        child.attributes['_cw_acc'] = nil
+        if in_whitelist(acc) then
+          return wrap_element(child, env, true)
+        end
+      end
+    end,
+  }
+end
+
+--- Processes children in two passes to support chains (note.title.icon) across
+--- all Pandoc versions. A single-pass approach (mark+substitute in one walk)
+--- breaks in Pandoc 3.9+: returning a replacement from a walk handler stops
+--- further descent into nested levels, so deeper chain entries are never seen.
+--- Pass 1 (mark_children) annotates matching elements without substituting,
+--- letting the walk descend fully. Pass 2 (wrap_marked) substitutes bottom-up.
+--- trigger     : current level name, used as environment
 --- accumulated : full dot-chain so far, used for whitelist wrap check
 local function walk_element(el, is_inline, trigger, accumulated)
   if FORMAT ~= 'html' and FORMAT ~= 'epub' then
-    el = el:walk {
-      Div = function(child)
-        local class = child.classes:find_if(function(c)
-          return Whitelist[trigger .. '.' .. c]
-        end)
-        if class then
-          local entry = Whitelist[trigger .. '.' .. class]
-          local env = (entry == true) and class or entry
-          return walk_element(child, false, env, accumulated .. '.' .. class)
-        end
-      end,
-      Span = function(child)
-        local class = child.classes:find_if(function(c)
-          return Whitelist[trigger .. '.' .. c]
-        end)
-        if class then
-          local entry = Whitelist[trigger .. '.' .. class]
-          local env = (entry == true) and class or entry
-          return walk_element(child, true, env, accumulated .. '.' .. class)
-        end
-      end,
-    }
+    el = mark_children(el, accumulated)
+    el = wrap_marked(el)
   end
   if in_whitelist(accumulated) then
     return wrap_element(el, trigger, is_inline)
