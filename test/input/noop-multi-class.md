@@ -4,6 +4,8 @@ container-writer:
     - epigraph
 container-unwrap:
   - void
+  
+container-unwrap: void
 ---
 
 ::: {.epigraph .sidebar}

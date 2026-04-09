@@ -8,6 +8,8 @@ container-writer:
     - note.title: notetitle
   html:
     - note.title
+    
+container-unwrap: void
 ---
 
 ::: note

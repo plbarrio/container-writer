@@ -2,6 +2,8 @@
 container-writer:
   common:
     - note.title
+    
+container-unwrap: void
 ---
 
 ::: note
