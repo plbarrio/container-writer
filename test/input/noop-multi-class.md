@@ -2,6 +2,8 @@
 container-writer:
   common:
     - epigraph
+    
+container-unwrap: all
 ---
 
 ::: {.epigraph .sidebar}
