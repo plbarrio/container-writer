@@ -59,7 +59,8 @@ local function process_metadata(meta)
 
   local function add_list(list)
     if not list then return end
-    for _, item in ipairs(list) do
+    local items = (pandoc.utils.type(list) == 'List') and list or { list }
+    for _, item in ipairs(items) do
       local t = pandoc.utils.type(item)
       if t == 'Meta' or t == 'table' then
         -- remap entry: {note.title: notetitle}
@@ -112,11 +113,10 @@ local function wrap_element(el, environment, is_inline)
     if is_inline then
       return inline_wrap('typst', '#[', el.content, '] <' .. environment .. '>')
     else
-      local blocks = { pandoc.RawBlock('typst', '#block[') }
-      for _, block in ipairs(el.content) do
-        table.insert(blocks, block)
-      end
-      table.insert(blocks, pandoc.RawBlock('typst', '] <' .. environment .. '>'))
+      local blocks = pandoc.Blocks({})
+      blocks:insert(pandoc.RawBlock('typst', '#block['))
+      blocks:extend(el.content)
+      blocks:insert(pandoc.RawBlock('typst', '] <' .. environment .. '>'))
       return blocks
     end
 
@@ -124,11 +124,11 @@ local function wrap_element(el, environment, is_inline)
     if is_inline then
       return inline_wrap('latex', '\\' .. environment .. '{', el.content, '}')
     else
-      return {
-        pandoc.RawBlock('latex', '\\begin{' .. environment .. '}'),
-        el,
-        pandoc.RawBlock('latex', '\\end{' .. environment .. '}'),
-      }
+      local blocks = pandoc.Blocks({})
+      blocks:insert(pandoc.RawBlock('latex', '\\begin{' .. environment .. '}'))
+      blocks:extend(el.content)
+      blocks:insert(pandoc.RawBlock('latex', '\\end{' .. environment .. '}'))
+      return blocks
     end
 
   elseif FORMAT == 'context' then
@@ -140,11 +140,11 @@ local function wrap_element(el, environment, is_inline)
           return pandoc.RawInline('context', '\n')
         end,
       }
-      return {
-        pandoc.RawBlock('context', '\\start' .. environment),
-        el,
-        pandoc.RawBlock('context', '\\stop' .. environment),
-      }
+      local blocks = pandoc.Blocks({})
+      blocks:insert(pandoc.RawBlock('context', '\\start' .. environment))
+      blocks:extend(el.content)
+      blocks:insert(pandoc.RawBlock('context', '\\stop' .. environment))
+      return blocks
     end
 
   else

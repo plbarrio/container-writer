@@ -6,3 +6,4 @@ contributes:
   filters:
     - container-writer.lua
     - container-strip.lua
+    - container-unwrap.lua

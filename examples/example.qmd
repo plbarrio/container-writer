@@ -1,0 +1,16 @@
+---
+title: container-writer.lua — full demo
+
+filters:
+  - ../container-writer.lua
+
+format:
+  pdf:
+    include-in-header: styles/demo-preamble.tex
+  html:
+    css: styles/demo.css
+
+project:
+  output-dir: output/quarto
+---
+{{< include demo.md >}}

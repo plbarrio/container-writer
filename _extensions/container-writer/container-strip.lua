@@ -40,7 +40,8 @@ local Blacklist = {}
 local function process_metadata(meta)
   local config = meta['container-strip']
   if not config then return meta end
-  for _, item in ipairs(config) do
+  local list = (pandoc.utils.type(config) == 'List') and config or { config }
+  for _, item in ipairs(list) do
     Blacklist[pandoc.utils.stringify(item)] = true
   end
   return meta

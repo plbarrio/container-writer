@@ -1,14 +1,15 @@
-# container-writer.lua / container-strip.lua
+# container-writer.lua / container-strip.lua / container-unwrap.lua
 
 [![test](https://github.com/plbarrio/container-writer/actions/workflows/test.yml/badge.svg)](https://github.com/plbarrio/container-writer/actions/workflows/test.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Pandoc](https://img.shields.io/badge/pandoc-%3E%3D2.19.1-orange)](https://pandoc.org)
 [![Quarto](https://img.shields.io/badge/quarto-%3E%3D1.4.0-blue)](https://quarto.org)
 
-Two companion Pandoc Lua filters:
+Three companion Pandoc Lua filters:
 
 - `container-writer.lua` — translates generic `Div` and `Span` containers into format-native environments for LaTeX, ConTeXt, Typst, and passthrough for HTML/EPUB.
-- `container-strip.lua` — removes `Div` and `Span` elements by class, for stripping editorial annotations in production builds.
+- `container-strip.lua` — removes `Div` and `Span` elements by class, content and all, for stripping editorial annotations in production builds.
+- `container-unwrap.lua` — removes `Div` and `Span` container elements while preserving their content. Useful as a post-processing step after `container-writer.lua` to neutralise elements that were not in the whitelist.
 
 Copyright 2026 Pedro Luis Barrio under GPL-3.0-or-later, see LICENSE file for details.
 
@@ -96,6 +97,19 @@ flowchart TD
 ```
 The effective whitelist for a given format is `common` + the FORMAT-specific
 list. Containers not in the whitelist are left untouched.
+
+Both `common` and format-specific keys accept a scalar for a single entry
+or a list for multiple entries:
+
+```yaml
+container-writer:
+  common: epigraph
+
+container-writer:
+  common:
+    - epigraph
+    - note
+```
 
 Only whitelisted names are processed — unknown containers never cause errors
 in the output format.
@@ -296,9 +310,11 @@ Define the environments in your preamble or template:
 ## container-strip.lua
 
 Removes `Div` and `Span` elements by class — content and all. Configure
-with a separate YAML key:
+with a separate YAML key. Accepts a scalar for a single class or a list:
 
 ```yaml
+container-strip: marginnoteopen
+
 container-strip:
   - marginnoteopen
   - marginnoteclosed
@@ -314,6 +330,42 @@ pandoc --lua-filter=container-strip.lua \
 
 Note: `container-strip` must run **before** `container-writer` — if writer
 runs first it converts spans to raw format commands that strip never sees.
+
+---
+
+## container-unwrap.lua
+
+Removes `Div` and `Span` container elements while preserving their content.
+Useful after `container-writer.lua` to neutralise elements not in the
+whitelist that would otherwise render differently across Pandoc versions
+(e.g. `#block[]` in Typst 3.9 vs nothing in 3.1).
+
+Must run **after** `container-writer.lua` — the writer converts whitelisted
+elements to raw format commands that unwrap never sees.
+
+```sh
+pandoc --lua-filter=container-writer.lua \
+       --lua-filter=container-unwrap.lua \
+       input.md -t typst
+```
+
+Accepts a scalar or a list. Two reserved keywords control bulk behaviour:
+
+- `all` — unwrap every remaining `Div`/`Span` regardless of class
+- `void` — unwrap elements that carry no class at all
+
+```yaml
+container-unwrap: all
+
+container-unwrap: void
+
+container-unwrap: sidebar
+
+container-unwrap:
+  - void
+  - sidebar
+  - note
+```
 
 ## Known limitations
 

@@ -1,0 +1,7 @@
+\begin{epigraph}
+
+Only epigraph is whitelisted, sidebar is not. Should wrap as epigraph.
+
+\end{epigraph}
+
+Neither class is whitelisted. Should pass through unchanged.

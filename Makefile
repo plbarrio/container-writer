@@ -1,19 +1,58 @@
-FILTER       = container-writer.lua
-STRIP_FILTER = container-strip.lua
+FILTER        = container-writer.lua
+STRIP_FILTER  = container-strip.lua
+UNWRAP_FILTER = container-unwrap.lua
 STRIP_INPUTS = $(wildcard test/input/strip-*.md)
 INPUTS_NOFILTER = $(wildcard test/input/noop*.md)
 INPUTS       = $(filter-out $(STRIP_INPUTS) $(INPUTS_NOFILTER), $(wildcard test/input/*.md))
 FORMATS      = latex context typst
 
-.PHONY: test test-strip test-quarto test-quarto-strip \
-        generate-tests generate-strip-tests clean
+.PHONY: test test-noop test-strip test-quarto test-quarto-strip \
+        generate-tests generate-noop-tests generate-strip-tests clean
 
-test:
+test: test-noop
 	@failed=0; \
 	for f in $(INPUTS); do \
 		name=$$(basename $$f .md); \
 		for fmt in $(FORMATS); do \
 			pandoc --lua-filter=$(FILTER) $$f -t $$fmt \
+				> /tmp/cw_$${name}_$${fmt}.out \
+				2>/tmp/cw_$${name}_$${fmt}.err; \
+			stdout_ok=1; stderr_ok=1; \
+			if ! diff -q /tmp/cw_$${name}_$${fmt}.out \
+					test/expected/$${name}-$${fmt}.out \
+					> /dev/null 2>&1; then \
+				echo "FAIL: $$name ($$fmt stdout)"; \
+				diff /tmp/cw_$${name}_$${fmt}.out \
+					test/expected/$${name}-$${fmt}.out; \
+				stdout_ok=0; failed=1; \
+			fi; \
+			if [ -f test/expected/$${name}-$${fmt}.err ]; then \
+				if ! diff -q /tmp/cw_$${name}_$${fmt}.err \
+						test/expected/$${name}-$${fmt}.err \
+						> /dev/null 2>&1; then \
+					echo "FAIL: $$name ($$fmt stderr)"; \
+					diff /tmp/cw_$${name}_$${fmt}.err \
+						test/expected/$${name}-$${fmt}.err; \
+					stderr_ok=0; failed=1; \
+				fi; \
+			elif [ -s /tmp/cw_$${name}_$${fmt}.err ]; then \
+				echo "FAIL: $$name ($$fmt unexpected stderr)"; \
+				cat /tmp/cw_$${name}_$${fmt}.err; \
+				stderr_ok=0; failed=1; \
+			fi; \
+			[ $$stdout_ok -eq 1 ] && [ $$stderr_ok -eq 1 ] \
+				&& echo "PASS: $$name ($$fmt)"; \
+		done; \
+	done; \
+	exit $$failed
+
+test-noop:
+	@failed=0; \
+	for f in $(INPUTS_NOFILTER); do \
+		name=$$(basename $$f .md); \
+		for fmt in $(FORMATS); do \
+			pandoc --lua-filter=$(FILTER) \
+			       --lua-filter=$(UNWRAP_FILTER) $$f -t $$fmt \
 				> /tmp/cw_$${name}_$${fmt}.out \
 				2>/tmp/cw_$${name}_$${fmt}.err; \
 			stdout_ok=1; stderr_ok=1; \
@@ -162,6 +201,25 @@ generate-tests:
 		name=$$(basename $$f .md); \
 		for fmt in $(FORMATS); do \
 			pandoc --lua-filter=$(FILTER) $$f -t $$fmt \
+				> test/expected/$${name}-$${fmt}.out \
+				2>test/expected/$${name}-$${fmt}.err.tmp; \
+			if [ -s test/expected/$${name}-$${fmt}.err.tmp ]; then \
+				mv test/expected/$${name}-$${fmt}.err.tmp \
+					test/expected/$${name}-$${fmt}.err; \
+			else \
+				rm -f test/expected/$${name}-$${fmt}.err.tmp; \
+			fi; \
+			echo "Generated: $$name ($$fmt)"; \
+		done; \
+	done
+
+generate-noop-tests:
+	@mkdir -p test/expected
+	@for f in $(INPUTS_NOFILTER); do \
+		name=$$(basename $$f .md); \
+		for fmt in $(FORMATS); do \
+			pandoc --lua-filter=$(FILTER) \
+			       --lua-filter=$(UNWRAP_FILTER) $$f -t $$fmt \
 				> test/expected/$${name}-$${fmt}.out \
 				2>test/expected/$${name}-$${fmt}.err.tmp; \
 			if [ -s test/expected/$${name}-$${fmt}.err.tmp ]; then \

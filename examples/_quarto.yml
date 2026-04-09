@@ -1,6 +1,9 @@
 filters:
   - ../container-writer.lua
     
+project:
+  output-dir: output/quarto
+    
 format:
   pdf:
     include-in-header: styles/demo-preamble.tex
