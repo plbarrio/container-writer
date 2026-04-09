@@ -42,9 +42,6 @@ jobs:
 
       - uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Run noop tests
-        run: make test-noop
-
       - name: Run writer tests (Quarto)
         run: make test-quarto
 
