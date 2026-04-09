@@ -5,5 +5,5 @@ container-writer:
 ---
 
 ::: {.epigraph environment=myepigraph}
-Content with a per-block environment= override.
+Content with a per-block environment override.
 :::
