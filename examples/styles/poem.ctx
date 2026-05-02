@@ -2,23 +2,25 @@
 \definefontfamily [mainface] [serif] [pagella]      [features=default, rscale=1.0]
 \definefontfamily [mainface] [serif] [libertine]    [features=default, rscale=1.0]
 
+\let\crlf\relax 
+
 \setupbodyfont [mainface, 11pt]
 
 \setuppapersize[A5]
 
 \definelines[verse]
 \setuplines[verse]
-  [before={\blank\startnarrow[default=left,left=1.5cm]},
-    after={\stopnarrow\blank},
-    indenting={yes,-1cm}]
-    
-\define[1]\poemtitle{
-  \blank[big]
-  \midaligned{\bf\fontsize[big] #1}
-  \blank[medium]
-}   
+  [before={\blank\startnarrow[default=left,left=1.5cm]\setupwhitespace[none]},
+   after={\stopnarrow\blank},
+   indenting={yes,-1cm}]
 
-\define[1]\poemauthor{
-  \blank[small]
-  \rightaligned{\it #1}
+\define[1]\poemtitle{%
+  \par\blank[big]%
+  \midaligned{\bf\tfb #1}\par%
+  \blank[medium]%
+}
+
+\define[1]\poemauthor{%
+  \par\blank[small]%
+  \rightaligned{\it #1}\par%
 }

@@ -258,6 +258,9 @@ latex
 
 The filter emits `\begin{verse}...\end{verse}` and the package provides the implementation. Your source stays pure Markdown across all output formats — ConTeXt, Typst and HTML use their own definitions independently.
 
+![LaTeX output](assets/poem-Shakespeare.svg)
+
+
 ---
 
 ## Typst templates

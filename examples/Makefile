@@ -151,12 +151,12 @@ $(QOUTDIR)/%-context.pdf: %.md | $(QOUTDIR)
 
 $(QOUTDIR)/%.html: %.md | $(QOUTDIR)
 	quarto render $< --to html \
-	  --metadata include-in-header=styles/$*.css \
+	  --metadata css=styles/$*.css \
 	  --output-dir=$(QOUTDIR)
 
 $(QOUTDIR)/%.epub: %.md | $(QOUTDIR)
 	quarto render $< --to epub \
-	  --metadata include-in-header=styles/$*.css \
+	  --metadata css=styles/$*.css \
 	  --output-dir=$(QOUTDIR)
 
 # --- quarto strip rules -------------------------------------
@@ -182,13 +182,13 @@ $(QOUTDIR)/%-context-strip.pdf: %.md | $(QOUTDIR)
 
 $(QOUTDIR)/%-strip.html: %.md | $(QOUTDIR)
 	quarto render $< --to html \
-	  --metadata include-in-header=styles/$*.css \
+	  --metadata css=styles/$*.css \
 	  --metadata-file=_quarto-strip.yml \
 	  --output-dir=$(QOUTDIR)
 
 $(QOUTDIR)/%-strip.epub: %.md | $(QOUTDIR)
 	quarto render $< --to epub \
-	  --metadata include-in-header=styles/$*.css \
+	  --metadata css=styles/$*.css \
 	  --metadata-file=_quarto-strip.yml \
 	  --output-dir=$(QOUTDIR)
 

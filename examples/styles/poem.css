@@ -1,3 +1,10 @@
+body {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: "Baskervville", "TeX Gyre Pagella", "Libertinus Serif", serif;
+}
+
 .verse p {
   margin-left: 1.5em;
   margin-top: 0;
@@ -7,7 +14,6 @@
 .verse div {
   margin-bottom: 1em;
   page-break-inside: avoid;
-  font-family: "Baskervville", "TeX Gyre Pagella", "Libertinus Serif", serif;
   font-style: italic;
 }
 

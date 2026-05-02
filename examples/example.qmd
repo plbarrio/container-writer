@@ -10,6 +10,9 @@ format:
   pdf:
     include-in-header: styles/demo.tex
     output-file: demo-latex.pdf
+  
+  # quarto render --to context broken: uses LaTeX template instead of ConTeXt
+  # see https://github.com/quarto-dev/quarto-cli/issues/14209
   context:
     include-in-header: styles/demo.ctx
     output-file: demo-context.pdf
