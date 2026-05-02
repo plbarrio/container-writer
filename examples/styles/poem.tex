@@ -1,0 +1,17 @@
+\IfFontExistsTF{Baskervville}{
+  \setmainfont{Baskervville}
+}{
+  \IfFontExistsTF{TeX Gyre Pagella}{
+    \setmainfont{TeX Gyre Pagella}
+  }{
+    \setmainfont{Linux Libertine O}
+  }
+}
+
+\usepackage[a5paper, top=2cm, bottom=2cm, left=2.5cm, right=2cm]{geometry}
+\usepackage{verse}
+
+\newcommand{\poemauthor}[1]{%
+  \vspace{0.5cm}%
+  \noindent\hfill\textit{\small #1}\par%
+}

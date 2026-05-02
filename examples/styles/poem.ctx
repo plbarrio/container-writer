@@ -1,0 +1,24 @@
+\definefontfamily [mainface] [serif] [Baskervville] [features=default]
+\definefontfamily [mainface] [serif] [pagella]      [features=default, rscale=1.0]
+\definefontfamily [mainface] [serif] [libertine]    [features=default, rscale=1.0]
+
+\setupbodyfont [mainface, 11pt]
+
+\setuppapersize[A5]
+
+\definelines[verse]
+\setuplines[verse]
+  [before={\blank\startnarrow[default=left,left=1.5cm]},
+    after={\stopnarrow\blank},
+    indenting={yes,-1cm}]
+    
+\define[1]\poemtitle{
+  \blank[big]
+  \midaligned{\bf\fontsize[big] #1}
+  \blank[medium]
+}   
+
+\define[1]\poemauthor{
+  \blank[small]
+  \rightaligned{\it #1}
+}

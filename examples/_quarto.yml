@@ -3,13 +3,3 @@ filters:
     
 project:
   output-dir: output/quarto
-    
-format:
-  pdf:
-    include-in-header: styles/demo-preamble.tex
-  html:
-    css: styles/demo.css
-  context:
-    include-in-header: styles/demo.ctx
-  typst:
-    include-in-header: styles/demo.typ

@@ -46,55 +46,9 @@ containers in the appropriate format command.
 | Element | LaTeX                         | ConTeXt                    | Typst             | HTML/EPUB |
 |---------|-------------------------------|----------------------------|-------------------|-----------|
 | `Div`   | `\begin{name}`...`\end{name}` | `\startname`...`\stopname` | `#block[...] <name>` | unchanged |
-| `Span`  | `\name{...}`                  | `\name{...}`               | `#[...] <n>`      | unchanged |
+| `Span`  | `\name{...}`                  | `\name{...}`               | `#[...] <name>`      | unchanged |
 
-```mermaid
----
-config:
-  theme: 'base'
-  themeVariables:
-    primaryColor: '#FEFEFE'
-    primaryTextColor: '#555'
-    primaryBorderColor: '#AAA'
-    lineColor: '#555'
-    secondaryColor: '#666'
-    tertiaryColor: '#AAA'
----
 
-flowchart TD
-    
-    A[Div]
-    
-    A --> B[Whitelist?]
-         
-    B --> L["**LaTeX:**<br> \begin{name}<br>\end{name}"]
-    B --> M["**ConTeXt:**<br> \startname<br>\stopname"]
-    B --> N["**Typst:**<br> #block[...] &lt;name&gt;"]
-```
-
-```mermaid
----
-config:
-  theme: 'base'
-  themeVariables:
-    primaryColor: '#FEFEFE'
-    primaryTextColor: '#555'
-    primaryBorderColor: '#AAA'
-    lineColor: '#555'
-    secondaryColor: '#666'
-    tertiaryColor: '#AAA'
----
-
-flowchart TD
-    
-    A[Span]
-    
-    A --> B[Whitelist?]
-         
-    B --> L["**LaTeX:**<br>\name{...}"]
-    B --> M["**ConTeXt:**<br>\name{...}"]
-    B --> N["**Typst:**<br> #[...] &lt;name&gt;"]
-```
 The effective whitelist for a given format is `common` + the FORMAT-specific
 list. Containers not in the whitelist are left untouched.
 
@@ -273,6 +227,36 @@ container-strip:
 ```
 
 Style files: `notes.tex`, `notes.ctx`, `notes.typ`, `notes.css`.
+
+
+### Using existing LaTeX packages without writing LaTeX
+
+A whitelisted class name that matches an environment defined by a LaTeX package works out of the box — no `\newenvironment` needed in your preamble, no raw LaTeX in your source files.
+
+markdown
+
+```markdown
+::: verse
+Shall I compare thee to a summer's day?\
+Thou art more lovely and more temperate.
+:::
+```
+
+yaml
+
+```yaml
+container-writer:
+  common:
+    - verse
+```
+
+latex
+
+```latex
+\usepackage{verse}
+```
+
+The filter emits `\begin{verse}...\end{verse}` and the package provides the implementation. Your source stays pure Markdown across all output formats — ConTeXt, Typst and HTML use their own definitions independently.
 
 ---
 

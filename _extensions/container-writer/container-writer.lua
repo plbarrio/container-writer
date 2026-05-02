@@ -39,7 +39,7 @@ Parent.child entries (e.g. note.title):
 See copyright notice in file LICENSE.
 ]]
 
-PANDOC_VERSION:must_be_at_least( { 2, 19, 1 } )
+PANDOC_VERSION:must_be_at_least({ 2, 19, 1 })
 
 
 -- # Whitelist
@@ -59,14 +59,14 @@ local function process_metadata(meta)
 
   local function add_list(list)
     if not list then return end
-    for _, item in ipairs(list) do
+    local items = (pandoc.utils.type(list) == 'List') and list or { list }
+    for _, item in ipairs(items) do
       local t = pandoc.utils.type(item)
       if t == 'Meta' or t == 'table' then
         -- remap entry: {note.title: notetitle}
         for k, v in pairs(item) do
-          local key = pandoc.utils.stringify(k)
-          local val = pandoc.utils.stringify(v)
-          Whitelist[key] = val
+          Whitelist[pandoc.utils.stringify(k)] =
+            pandoc.utils.stringify(v)
         end
       else
         -- plain entry: note or note.title
@@ -90,9 +90,9 @@ end
 local function inline_wrap(fmt, open, inlines, close)
   local result = { pandoc.RawInline(fmt, open) }
   for _, inline in ipairs(inlines) do
-    table.insert(result, inline)
+    result[#result + 1] = inline
   end
-  table.insert(result, pandoc.RawInline(fmt, close))
+  result[#result + 1] = pandoc.RawInline(fmt, close)
   return result
 end
 
@@ -134,6 +134,8 @@ local function wrap_element(el, environment, is_inline)
     if is_inline then
       return inline_wrap('context', '\\' .. environment .. '{', el.content, '}')
     else
+      -- SoftBreak must be emitted as a hard newline inside ConTeXt environments,
+      -- otherwise ConTeXt collapses it to a space and breaks line-sensitive content.
       el = el:walk {
         SoftBreak = function()
           return pandoc.RawInline('context', '\n')
@@ -145,84 +147,61 @@ local function wrap_element(el, environment, is_inline)
       blocks:insert(pandoc.RawBlock('context', '\\stop' .. environment))
       return blocks
     end
-
-  else
-    return nil
   end
 end
 
---- Pass 1: mark matching children with _cw_env and _cw_acc attributes.
---- Does not substitute — lets the walk descend fully into nested levels
---- before any replacement occurs. This avoids a Pandoc 3.9 behaviour where
---- returning a replacement from a walk handler stops further descent.
+
+-- # Child processing (two-pass)
+
+--- Pass 1: annotate matching children with _cw_env and _cw_acc attributes.
+--- Does not substitute — lets the walk descend fully into all nested levels
+--- before any replacement occurs. This avoids a Pandoc 3.9+ behaviour where
+--- returning a replacement from a walk handler stops further descent, which
+--- would silently drop deeper chain entries (e.g. note.title.icon).
 local function mark_children(el, accumulated)
+  local function handle(child)
+    local class = child.classes:find_if(function(c)
+      return Whitelist[accumulated .. '.' .. c]
+    end)
+    if class then
+      local entry = Whitelist[accumulated .. '.' .. class]
+      local env   = (entry == true) and class or entry
+      local acc   = accumulated .. '.' .. class
+      child = mark_children(child, acc)
+      child.attributes['_cw_env'] = env
+      child.attributes['_cw_acc'] = acc
+      return child
+    end
+  end
+
   return el:walk {
-    Div = function(child)
-      local class = child.classes:find_if(function(c)
-        return Whitelist[accumulated .. '.' .. c]
-      end)
-      if class then
-        local entry = Whitelist[accumulated .. '.' .. class]
-        local env   = (entry == true) and class or entry
-        local acc   = accumulated .. '.' .. class
-        child = mark_children(child, acc)
-        child.attributes['_cw_env'] = env
-        child.attributes['_cw_acc'] = acc
-        return child
-      end
-    end,
-    Span = function(child)
-      local class = child.classes:find_if(function(c)
-        return Whitelist[accumulated .. '.' .. c]
-      end)
-      if class then
-        local entry = Whitelist[accumulated .. '.' .. class]
-        local env   = (entry == true) and class or entry
-        local acc   = accumulated .. '.' .. class
-        child = mark_children(child, acc)
-        child.attributes['_cw_env'] = env
-        child.attributes['_cw_acc'] = acc
-        return child
-      end
-    end,
+    Div  = handle,
+    Span = handle,
   }
 end
 
 --- Pass 2: substitute marked elements with their format-native wrapping.
 --- Runs bottom-up so inner elements are wrapped before outer ones.
 local function wrap_marked(el)
+  local function handle(child, is_inline)
+    local env = child.attributes['_cw_env']
+    local acc = child.attributes['_cw_acc']
+    if env then
+      child.attributes['_cw_env'] = nil
+      child.attributes['_cw_acc'] = nil
+      if in_whitelist(acc) then
+        return wrap_element(child, env, is_inline)
+      end
+    end
+  end
+
   return el:walk {
-    Div = function(child)
-      local env = child.attributes['_cw_env']
-      local acc = child.attributes['_cw_acc']
-      if env then
-        child.attributes['_cw_env'] = nil
-        child.attributes['_cw_acc'] = nil
-        if in_whitelist(acc) then
-          return wrap_element(child, env, false)
-        end
-      end
-    end,
-    Span = function(child)
-      local env = child.attributes['_cw_env']
-      local acc = child.attributes['_cw_acc']
-      if env then
-        child.attributes['_cw_env'] = nil
-        child.attributes['_cw_acc'] = nil
-        if in_whitelist(acc) then
-          return wrap_element(child, env, true)
-        end
-      end
-    end,
+    Div  = function(c) return handle(c, false) end,
+    Span = function(c) return handle(c, true)  end,
   }
 end
 
---- Processes children in two passes to support chains (note.title.icon) across
---- all Pandoc versions. A single-pass approach (mark+substitute in one walk)
---- breaks in Pandoc 3.9+: returning a replacement from a walk handler stops
---- further descent into nested levels, so deeper chain entries are never seen.
---- Pass 1 (mark_children) annotates matching elements without substituting,
---- letting the walk descend fully. Pass 2 (wrap_marked) substitutes bottom-up.
+--- Orchestrates the two-pass child processing and wraps the element itself.
 --- trigger     : current level name, used as environment
 --- accumulated : full dot-chain so far, used for whitelist wrap check
 local function walk_element(el, is_inline, trigger, accumulated)
@@ -236,31 +215,34 @@ local function walk_element(el, is_inline, trigger, accumulated)
   return el
 end
 
+
+-- # Entry point
+
 --- Pandoc entry point for Div and Span elements.
 --- Resolves the environment name from the whitelist or an explicit attribute,
 --- then delegates to walk_element.
 local function handle_element(el, is_inline)
   if FORMAT == 'json' then return nil end
+
   local explicit = el.attributes['env'] or el.attributes['environment']
+
   local environment = explicit or el.classes:find_if(function(c)
     if Whitelist[c] then return true end
     for key in pairs(Whitelist) do
       if key:match('^' .. c .. '%.') then return true end
     end
   end)
+
   if not environment then return nil end
+
   local entry = Whitelist[environment]
-  local env = (entry == true or entry == nil) and environment or entry
+  local env   = (entry == true or entry == nil) and environment or entry
+
   return walk_element(el, is_inline, env, environment)
 end
 
--- # Entry point
-
-local function handle_div(el)  return handle_element(el, false) end
-local function handle_span(el) return handle_element(el, true)  end
-
 return {
   { Meta = process_metadata },
-  { Div  = handle_div       },
-  { Span = handle_span      },
+  { Div  = function(el) return handle_element(el, false) end },
+  { Span = function(el) return handle_element(el, true)  end },
 }

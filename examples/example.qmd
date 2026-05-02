@@ -1,14 +1,21 @@
 ---
-title: container-writer.lua — full demo
-
 filters:
   - ../container-writer.lua
 
 format:
-  pdf:
-    include-in-header: styles/demo-preamble.tex
   html:
     css: styles/demo.css
+  epub:
+    css: styles/demo.css
+  pdf:
+    include-in-header: styles/demo.tex
+    output-file: demo-latex.pdf
+  context:
+    include-in-header: styles/demo.ctx
+    output-file: demo-context.pdf
+  typst:
+    include-in-header: styles/demo.typ
+    output-file: demo-typst.pdf
 
 project:
   output-dir: output/quarto

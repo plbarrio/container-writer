@@ -1,0 +1,23 @@
+---
+filters:
+  - ../container-writer.lua
+
+format:
+  html:
+    css: styles/poem.css
+  epub:
+    css: styles/poem.css
+  pdf:
+    include-in-header: styles/poem.tex
+    output-file: poem-latex.pdf
+  context:
+    include-in-header: styles/poem.ctx
+    output-file: poem-context.pdf
+  typst:
+    include-in-header: styles/poem.typ
+    output-file: poem-typst.pdf
+    
+project:
+  output-dir: output/quarto
+---
+{{< include poem.md >}}

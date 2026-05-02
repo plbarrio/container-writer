@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>container-writer — demo</title>
+<title>poem</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,131 +26,51 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="demo_files/libs/clipboard/clipboard.min.js"></script>
-<script src="demo_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="demo_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="demo_files/libs/quarto-html/popper.min.js"></script>
-<script src="demo_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="demo_files/libs/quarto-html/anchor.min.js"></script>
-<link href="demo_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="demo_files/libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="demo_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="demo_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="demo_files/libs/bootstrap/bootstrap-d57d2f0355a53a8e0fc9919a4091db7d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-</head><body class="fullcontent quarto-light">/* ============================================================
-   demo.css — styles for the container-writer demo
-   ============================================================ */
+<script src="poem_files/libs/clipboard/clipboard.min.js"></script>
+<script src="poem_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="poem_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="poem_files/libs/quarto-html/popper.min.js"></script>
+<script src="poem_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="poem_files/libs/quarto-html/anchor.min.js"></script>
+<link href="poem_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="poem_files/libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="poem_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="poem_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="poem_files/libs/bootstrap/bootstrap-d57d2f0355a53a8e0fc9919a4091db7d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+</head><body class="fullcontent quarto-light">.verse p {
+  margin-left: 1.5em;
+  margin-top: 0;
+  margin-bottom: 0;
+}
 
-body {
+.verse div {
+  margin-bottom: 1em;
+  page-break-inside: avoid;
   font-family: "Baskervville", "TeX Gyre Pagella", "Libertinus Serif", serif;
-  font-size: 1rem;
-  line-height: 1.6;
-  max-width: 40em;
-  margin: 2em auto;
-  padding: 0 1em;
-}
-
-.epigraph {
-  margin: 2em 4em;
   font-style: italic;
-  color: #444;
 }
 
-.epigraph p {
-  margin: 0.25em 0;
+.verse p + p {
+  margin-top: 1em;
 }
 
-.dedication {
-  margin: 2em auto;
+.poemauthor {
+    display: block;
+    text-align: right;
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  
+.poemtitle {
+  display: block;
+  font-weight: bold;
+  font-size: 1.3em;
   text-align: center;
-  font-style: italic;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-family: serif;
 }
-
-.abstract {
-  margin: 1.5em 2em;
-  font-size: 0.95em;
-  border-left: 3px solid #ccc;
-  padding-left: 1em;
-}
-
-.sidebar {
-  background: #f5f5f5;
-  border-left: 3px solid #ccc;
-  padding: 0.1em 0.4em;
-  font-size: 0.9em;
-}
-
-.highlight {
-  background: #fffbcc;
-  padding: 0.1em 0.2em;
-}
-
-/* --- Alerts ------------------------------------------------ */
-
-.note  {
-    margin: 1.25rem 0;
-    border-radius: .375rem;
-    border-left: 5px solid var(--color);
-    border-right: 1px solid rgba(210, 215, 220, 0.5);
-    border-top: 1px solid rgba(210, 215, 220, 0.5);
-    border-bottom: 1px solid rgba(210, 215, 220, 0.5);
-    background-color: white;
-    --color: #0969da;
-    --bg: #f6f8fa;
-    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230969da'%3E%3Cpath d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1 0-1.5h.25V8.5h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z'%3E%3C/path%3E%3C/svg%3E");
-
-}
-
-.note .title {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    font-weight: 600;
-    font-size: .9rem;
-    padding: .4em .7em .4em 2rem;
-    color: var(--color);
-    background-color: var(--bg);
-    background-image: var(--icon);
-    background-repeat: no-repeat;
-    background-position: 0.7rem center;
-    background-size: 1rem;
-}
-
-/* --- Editorial margin notes -------------------------------- */
-
-.marginnoteopen {
-  display: inline;
-  color: #e06c00;
-  font-size: 0.75em;
-  font-family: monospace;
-}
-.marginnoteopen::before { content: "✎ "; }
-
-.marginnoteclosed {
-  display: inline;
-  color: #999;
-  font-size: 0.75em;
-  font-family: monospace;
-}
-.marginnoteclosed::before { content: "✓ "; }
-
-.marginnoteopenblock {
-  display: block;
-  text-align: right;
-  color: #e06c00;
-  font-size: 0.75em;
-  font-family: monospace;
-}
-.marginnoteopenblock::before { content: "✎ "; }
-
-.marginnoteclosedblock {
-  display: block;
-  text-align: right;
-  color: #999;
-  font-size: 0.75em;
-  font-family: monospace;
-}
-.marginnoteclosedblock::before { content: "✓ "; }
 
 
 
@@ -161,105 +81,54 @@ body {
 
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">container-writer — demo</h1>
-</div>
 
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<section id="block-containers-div" class="level1">
-<h1>Block containers (Div)</h1>
-<section id="epigraph" class="level2">
-<h2 class="anchored" data-anchor-id="epigraph">Epigraph</h2>
-<div class="epigraph">
-<p><em>The world is a book, and those who do not travel read only one page.</em></p>
-<p>— Saint Augustine</p>
+<p><span class="poemtitle">Hamlet (fragment)</span></p>
+<div class="verse">
+<p>To be, or not to be: that is the question:<br>
+Whether ’tis nobler in the mind to suffer<br>
+The slings and arrows of outrageous fortune,<br>
+Or to take arms against a sea of troubles<br>
+And by opposing end them?</p>
 </div>
-</section>
-<section id="dedication" class="level2">
-<h2 class="anchored" data-anchor-id="dedication">Dedication</h2>
-<div class="dedication">
-<p>For all who write in the margins.</p>
+<p><span class="poemauthor">William Shakespeare</span></p>
+<p><span class="poemtitle">Rima LIII</span></p>
+<div class="verse">
+<p>Volverán las oscuras golondrinas<br>
+en tu balcón sus nidos a colgar,<br>
+y otra vez con el ala a sus cristales<br>
+jugando llamarán.</p>
+<p>Pero aquellas que el vuelo refrenaban<br>
+tu hermosura y mi dicha a contemplar,<br>
+aquellas que aprendieron nuestros nombres…<br>
+¡esas… no volverán!</p>
 </div>
-</section>
-<section id="abstract" class="level2">
-<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
-<div class="abstract">
-<p>This document demonstrates the container-writer filter, which translates generic Div and Span elements into format-native environments for LaTeX, ConTeXt, Typst and HTML.</p>
+<p><span class="poemauthor">Gustavo Adolfo Bécquer</span></p>
+<p><span class="poemtitle">Under der linden (Auszug)</span></p>
+<div class="verse">
+<p>Under der linden<br>
+an der heide,<br>
+da unser zweier bette was,<br>
+da mugent ir vinden schone beide<br>
+gebrochen bluomen unde gras.<br>
+vor dem walde in einem tal,<br>
+tandaradei,<br>
+schône sanc diu nahtegal.</p>
 </div>
-<hr>
-</section>
-</section>
-<section id="inline-containers-span" class="level1">
-<h1>Inline containers (Span)</h1>
-<p>A paragraph with a <span class="sidebar">marginal note</span> inserted inline.</p>
-<p>Another paragraph with a <span class="sidebar">second note</span> further along.</p>
-<hr>
-</section>
-<section id="per-block-override" class="level1">
-<h1>Per-block override</h1>
-<p>The <strong>env=</strong> attribute overrides the environment name for a specific block:</p>
-<div class="epigraph" data-env="myepigraph">
-<p>This block uses a custom environment name via <code>env=</code>.</p>
+<p><span class="poemauthor">Walther von der Vogelweide</span></p>
+<p><span class="poemtitle">Ballade des dames du temps jadis</span></p>
+<div class="verse">
+<p>Dictes-moy où, n’en quel pays,<br>
+Est Flora, la belle Romaine;<br>
+Archipiada, ne Thaïs,<br>
+Qui fut sa cousine germaine;<br>
+Echo, parlant quand bruyt on maine<br>
+Dessus rivière ou sus estan,<br>
+Qui beauté eut trop plus qu’humaine?<br>
+Mais où sont les neiges d’antan!</p>
 </div>
-<hr>
-</section>
-<section id="nested-styles-parent.child" class="level1">
-<h1>Nested styles (parent.child)</h1>
-<p>A container can have a titled child — both whitelisted independently. The <code>note.title</code> entry wraps the title in its own environment:</p>
-<div class="note">
-<div class="title">
-<p>Note</p>
-</div>
-<p>The title above is wrapped in its own environment via the <code>note.title</code> whitelist entry — useful for applying distinct formatting to the label.</p>
-</div>
-<hr>
-</section>
-<section id="remapping-latex-only" class="level1">
-<h1>Remapping (LaTeX only)</h1>
-<p>The <code>note.title: notetitle</code> entry in the <code>latex:</code> whitelist remaps the <code>note.title</code> class to a different environment name in LaTeX output only. Other formats use the default <code>title</code> name:</p>
-<div class="note">
-<div class="title">
-<p>Note</p>
-</div>
-<p>In LaTeX this title renders as <code>\begin{notetitle}</code> instead of <code>\begin{title}</code> — useful when your preamble defines format-specific environment names.</p>
-</div>
-<hr>
-</section>
-<section id="whitelist-unknown-containers-pass-through" class="level1">
-<h1>Whitelist — unknown containers pass through</h1>
-<p>This block is <strong>not</strong> in the whitelist and passes through unchanged:</p>
-<div class="unknown">
-<p>This div has no matching whitelist entry.</p>
-</div>
-<hr>
-</section>
-<section id="editorial-margin-notes" class="level1">
-<h1>Editorial margin notes</h1>
-<p>Margin notes are inline annotations for authors and editors. They are visible in review builds and stripped in production by removing the classes from the whitelist — no changes to the source files are needed.</p>
-<section id="inline-span" class="level2">
-<h2 class="anchored" data-anchor-id="inline-span">Inline (Span)</h2>
-<p>A short open note sits right next to the text it refers to.</p>
-<p>A resolved note looks different so you can see at a glance what still needs attention.</p>
-</section>
-<section id="block-div" class="level2">
-<h2 class="anchored" data-anchor-id="block-div">Block (Div)</h2>
-<p>For longer annotations a fenced Div works better:</p>
-</section>
-</section>
+<p><span class="poemauthor">François Villon</span></p>
 
 </main>
 <!-- /main column -->
